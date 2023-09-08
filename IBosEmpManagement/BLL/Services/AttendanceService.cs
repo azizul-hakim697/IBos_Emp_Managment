@@ -60,17 +60,18 @@ namespace BLL.Services
 
             if (isSuccess)
             {
-                var createAttendance = DataAccessFactory.EmployeeData().Get(attendence.Id);
+                var createAttendence = DataAccessFactory.AttendanceData().Get(attendence.Id);
 
-                var createAttendanceDTO = mapper.Map<AttendanceDTO>(createAttendance);
+                var createAttendenceDTO = mapper.Map<AttendanceDTO>(createAttendence);
 
-                return createAttendanceDTO;
+                return createAttendenceDTO;
             }
             else
             {
                 return null;
             }
         }
+        }
 
-    }
+    
 }

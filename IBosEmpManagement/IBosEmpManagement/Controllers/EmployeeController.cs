@@ -10,14 +10,14 @@ namespace IBosEmpManagement.Controllers
     public class EmployeeController  : Controller
     {
         // GET: api/employees
-        [HttpGet]
+        [HttpGet("allemp")]
         public ActionResult<IEnumerable<EmployeeDTO>> Get()
         {
             var employees = EmployeeService.Get();
             return Ok(employees);
         }
 
-        // GET: api/employees/5
+        // GET: api/employees/id
         [HttpGet("{id}")]
         public ActionResult<EmployeeDTO> Get(int id)
         {
@@ -29,8 +29,8 @@ namespace IBosEmpManagement.Controllers
             return Ok(employee);
         }
 
-        // POST: api/employees
-        [HttpPost]
+        // POST: api/employees/create
+        [HttpPost("Createemp")]
         public ActionResult<EmployeeDTO> Post([FromBody] EmployeeDTO employee)
         {
             if (!ModelState.IsValid)
@@ -49,48 +49,56 @@ namespace IBosEmpManagement.Controllers
         }
 
 
-        // PUT: api/employees/5
+
+        //update
         [HttpPut("{id}")]
-        public IActionResult Put(int id, [FromBody] EmployeeDTO employee)
+        public IActionResult Update(int id, EmployeeDTO employeeDTO)
         {
-            if (id != employee.EmployeeId)
-            {
-                return BadRequest("Employee ID in the request does not match the route parameter.");
-            }
+            employeeDTO.EmployeeId = id;
 
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            bool isSuccess = EmployeeService.Update(employee);
+            var isSuccess = EmployeeService.Update(employeeDTO);
 
             if (isSuccess)
             {
-                return NoContent();
+                return Ok("Updated :)");
             }
             else
             {
-                return BadRequest("Failed to update employee.");
+                return BadRequest("Please try again");
+            }
+        }
+
+        //get 3rd highest salary
+        [HttpGet("3rdhighsal")]
+        public IActionResult ThirdHighestSal()
+        {
+            var data = EmployeeService.Get3rd();
+            if (data != null)
+            {
+                return Ok(data);
+            }
+            else
+            {
+                return NotFound("Nor Record Found!");
             }
         }
 
         // GET: api/employees/absent
         [HttpGet("absent")]
-        public ActionResult<IEnumerable<EmployeeDTO>> GetOnAbsent()
+        public IActionResult GetOnAbcent()
         {
-            var employees = EmployeeService.GetOnAbsent();
-            return Ok(employees);
+            var data = EmployeeService.GetOnAbsent();
+            if (data != null)
+            {
+                return Ok(data);
+            }
+            else
+            {
+                return NotFound("No Record Found!");
+            }
         }
 
 
-        // GET: api/employees/3rd
-        [HttpGet("third")]
-        public ActionResult<EmployeeDTO> Get3rd()
-        {
-            var employee = EmployeeService.Get3rd();
-            return Ok(employee);
-        }
 
 
         // GET: api/employees/hierarchy/5
@@ -101,6 +109,19 @@ namespace IBosEmpManagement.Controllers
             return Ok(hierarchy);
         }
 
+        [HttpGet]
+        public IActionResult GetByHierarchy(int id)
+        {
+            var data = EmployeeService.GetEmployeeHierarchy(id);
+            if (data != null)
+            {
+                return Ok(data);
+            }
+            else
+            {
+                return NotFound("No Record Found!");
+            }
+        }
 
     }
 }

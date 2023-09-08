@@ -11,10 +11,10 @@ namespace BLL.DTOs
     {
         public int Id { get; set; }
         public int EmployeeId { get; set; }
-        public DateOnly AttendenceDate { get; set; }
+        public DateTime AttendanceDate { get; set; }
         public int IsPresent { get; set; }
         public int IsAbsent { get; set; }
         public int IsOffday { get; set; }
-        public Employee Employee { get; set; }
+        //public Employee Employee { get; set; }
     }
 }

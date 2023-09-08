@@ -9,8 +9,8 @@ namespace DAL.EntityFrameWork.Models
 {
     public class Employee
     {
-        [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "EmployeeId must be a positive integer.")]
+       
+       
         public int EmployeeId { get; set; }
 
         [Required]

@@ -39,11 +39,13 @@ namespace DAL.Repo
         public List<Employee> GetOnAbsent()
         {
             var employeesWithNoAbsentRecords = db.Employees
-           .Where(employee =>
-               employee.Attendance.All(attendance => attendance.IsAbsent == 0)
-           )
-           .OrderByDescending(employee => employee.EmployeeSalary)
-           .ToList();
+                .Where(employee =>
+                    !employee.Attendance.Any(attendance => attendance.IsAbsent == 1)
+                )
+                .OrderByDescending(employee => employee.EmployeeSalary)
+                .ToList();
+
+
 
             return employeesWithNoAbsentRecords;
         }
@@ -55,6 +57,13 @@ namespace DAL.Repo
             {
                 return false;
             }
+
+            bool isSame = exObj.EmployeeCode == obj.EmployeeCode;
+            if (isSame)
+            {
+                return false;
+            }
+
             exObj.EmployeeName = obj.EmployeeName;
             exObj.EmployeeCode = obj.EmployeeCode;
 
@@ -62,38 +71,40 @@ namespace DAL.Repo
             return db.SaveChanges() > 0;
         }
 
-        List<string> IRepo<Employee, int, bool>.GetOnHierarchy(int id)
+        public List<string> GetOnHierarchy(int id)
         {
             var hierarchy = new List<string>();
+            var visitedIds = new List<int>();
+
+
 
             while (id != 0)
             {
+                if (visitedIds.Contains(id))
+                {
+                    break;
+                }
+
+
+
                 var employee = db.Employees.FirstOrDefault(e => e.EmployeeId == id);
+
+
 
                 if (employee == null)
                 {
-                    // Employee not found
-                    return null;
+                    throw new Exception("Employee not found");
                 }
+
+
 
                 hierarchy.Add(employee.EmployeeName);
-
-                // Check if SupervisorId is not null before assigning it to id
-                if (employee.SupervisorId.HasValue)
-                {
-                    id = employee.SupervisorId.Value;
-                }
-                else
-                {
-                    // Handle the case where SupervisorId is null (if needed)
-                    // You can break out of the loop or handle it according to your requirements.
-                    // For example, you can throw an exception, return an error, or break the loop.
-                    // Here, we'll break the loop.
-                    break;
-                }
+                visitedIds.Add(id);
+                id = (int)employee.SupervisorId;
             }
 
-            hierarchy.Reverse(); // Reverse the hierarchy to get the correct order
+
+
             return hierarchy;
         }
 

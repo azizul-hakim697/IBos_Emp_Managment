@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BLL.Services
 {
-    public class MonthlyAttendanceService
+    public class MonthlyService
     {
         public List<MonthlyAttendanceDTO> GetMonthlyReport()
         {
@@ -21,7 +21,7 @@ namespace BLL.Services
             {
                 // Retrieve the attendance records for the employee for a specific month (e.g., September)
                 var attendanceRecords = DataAccessFactory.AttendanceData().Get()
-                    .Where(a => a.EmployeeId == employee.EmployeeId && a.AttendanceDate.Month == DateTime.Now.Month)
+                    .Where(a => a.EmployeeId == employee.EmployeeId && a.AttendenceDate.Month == DateTime.Now.Month)
                     .ToList();
 
                 // Calculate the report data
